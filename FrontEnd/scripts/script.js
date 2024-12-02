@@ -1,7 +1,6 @@
 function createWorks(works) {
   // console.log(project);
   for (let i = 0; i < works.length; i++) {
-    console.log(works[i]);
     const project = works[i];
     const gallery = document.querySelector('.gallery');
     const projectFigure = document.createElement('figure');
