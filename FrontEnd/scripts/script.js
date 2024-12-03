@@ -1,5 +1,4 @@
 function createWorks(works) {
-  // console.log(project);
   for (let i = 0; i < works.length; i++) {
     const project = works[i];
     const gallery = document.querySelector('.gallery');
@@ -15,31 +14,64 @@ function createWorks(works) {
   }
 }
 
+function createTabs(works) {
+  // Récupérer les catégories
+  const categoriesNames = works.map((work) => work.category.name);
+  const projectsCategories = new Set(categoriesNames);
+  // Créer le html
+  const categoriesTabsWrapper = document.querySelector('.tabs');
+  const categoriesTabs = document.createElement('ul');
+  categoriesTabsWrapper.appendChild(categoriesTabs);
+  // Créer le tab "Tous"
+  const categoriesTabAll = document.createElement('li');
+  const categoriesTabAllLink = document.createElement('a');
+  categoriesTabAllLink.innerText = 'Tous';
+  categoriesTabAll.appendChild(categoriesTabAllLink);
+  categoriesTabs.appendChild(categoriesTabAll);
+  // Ajouter les catégories aux tabs
+  projectsCategories.forEach((element) => {
+    const categoriesTab = document.createElement('li');
+    const categoriesTabLink = document.createElement('a');
+    categoriesTabLink.innerText = element;
+    categoriesTab.appendChild(categoriesTabLink);
+    categoriesTabs.appendChild(categoriesTab);
+  });
+}
+
 async function getWorks() {
   try {
     const response = await fetch('http://localhost:5678/api/works');
     const works = await response.json();
-    // Récupérer les catégories
-    const categoriesNames = works.map((work) => work.category.name);
-    const projectsCategories = new Set(categoriesNames);
-    // Créer le html
-    const categoriesTabsWrapper = document.querySelector('.tabs');
-    const categoriesTabs = document.createElement('ul');
-    categoriesTabsWrapper.appendChild(categoriesTabs);
-    // Ajouter les catégories aux tabs
-    projectsCategories.forEach((element) => {
-      const categoriesTab = document.createElement('li');
-      categoriesTab.className = 'categories-tabs';
-      const categoriesTabLink = document.createElement('a');
-      categoriesTabLink.innerText = element;
-      categoriesTab.appendChild(categoriesTabLink);
-      categoriesTabs.appendChild(categoriesTab);
+    createTabs(works);
+    createWorks(works);
+    // Récupérer la gallerie de projet
+    const gallery = document.querySelector('.gallery');
+    // Récupérer les liens des tabs
+    const tabs = document.querySelectorAll('.tabs ul li');
+    // Filtrer la gallerie par catégorie
+    tabs.forEach((tab) => {
+      tab.addEventListener('click', (event) => {
+        console.log(event.target.innerText);
+        if (event.target.innerText == 'Tous') {
+          console.log('Tous');
+          gallery.innerHTML = '';
+          createWorks(works);
+        } else {
+          console.log('Filtre');
+          const worksFiltered = works.filter(
+            (work) => work.category.name === event.target.innerText,
+          );
+          gallery.innerHTML = '';
+          createWorks(worksFiltered);
+        }
+      });
     });
     //
-    createWorks(works);
   } catch (error) {
     console.error(`Une erreur est survenue : ${error}`);
   }
 }
 
 getWorks();
+
+//
