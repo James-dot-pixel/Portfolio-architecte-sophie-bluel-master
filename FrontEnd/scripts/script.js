@@ -1,3 +1,4 @@
+// Afficher les projets
 function createWorks(works) {
   for (let i = 0; i < works.length; i++) {
     const project = works[i];
@@ -14,6 +15,7 @@ function createWorks(works) {
   }
 }
 
+// Créer les onglets de filtrage par catégories
 function createTabs(works) {
   // Récupérer les catégories
   const categoriesNames = works.map((work) => work.category.name);
@@ -38,40 +40,43 @@ function createTabs(works) {
   });
 }
 
+// Filtrer les projets par catégorie
+function filterWorks(works) {
+  // Récupérer la gallerie de projet
+  const gallery = document.querySelector('.gallery');
+  // Récupérer les liens des tabs
+  const tabs = document.querySelectorAll('.tabs ul li');
+  // Filtrer la gallerie par catégorie
+  tabs.forEach((tab) => {
+    tab.addEventListener('click', (event) => {
+      console.log(event.target.innerText);
+      if (event.target.innerText === 'Tous') {
+        console.log('Tous');
+        gallery.innerHTML = '';
+        createWorks(works);
+      } else {
+        console.log('Filtre');
+        const worksFiltered = works.filter(
+          (work) => work.category.name === event.target.innerText,
+        );
+        gallery.innerHTML = '';
+        createWorks(worksFiltered);
+      }
+    });
+  });
+}
+
+// Récupérer les projets depuis l'API
 async function getWorks() {
   try {
     const response = await fetch('http://localhost:5678/api/works');
     const works = await response.json();
     createTabs(works);
     createWorks(works);
-    // Récupérer la gallerie de projet
-    const gallery = document.querySelector('.gallery');
-    // Récupérer les liens des tabs
-    const tabs = document.querySelectorAll('.tabs ul li');
-    // Filtrer la gallerie par catégorie
-    tabs.forEach((tab) => {
-      tab.addEventListener('click', (event) => {
-        console.log(event.target.innerText);
-        if (event.target.innerText == 'Tous') {
-          console.log('Tous');
-          gallery.innerHTML = '';
-          createWorks(works);
-        } else {
-          console.log('Filtre');
-          const worksFiltered = works.filter(
-            (work) => work.category.name === event.target.innerText,
-          );
-          gallery.innerHTML = '';
-          createWorks(worksFiltered);
-        }
-      });
-    });
-    //
+    filterWorks(works);
   } catch (error) {
     console.error(`Une erreur est survenue : ${error}`);
   }
 }
 
 getWorks();
-
-//
