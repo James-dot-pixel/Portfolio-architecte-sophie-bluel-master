@@ -419,3 +419,9 @@ footer nav ul {
 	flex-direction: column;
 	gap: 7px;
 }
+
+.error {
+	color: red;
+	display: none;
+	margin-top: 0.5em;
+}
