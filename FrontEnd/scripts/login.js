@@ -2,6 +2,19 @@ const inputEmail = document.getElementById('email');
 const inputPassword = document.getElementById('password');
 const emailError = document.getElementById('emailError');
 const passwordError = document.getElementById('passwordError');
+const buttonWrapper = document.querySelector('.login-buttons-wrapper');
+const passwordLink = document.querySelector('.login-buttons-wrapper a');
+const alertInfo = document.createElement('p');
+
+// Vérifier si l'alerte doit être affiché
+function checkAlertInfo() {
+  if (
+    emailError.style.display === 'none' &&
+    passwordError.style.display === 'none'
+  ) {
+    alertInfo.style.display = 'none';
+  }
+}
 
 // Vérifier l'email
 function checkEmail() {
@@ -10,8 +23,11 @@ function checkEmail() {
   if (email === '' || !regexEmail.test(email)) {
     emailError.innerText = 'Email invalide';
     emailError.style.display = 'block';
+    inputEmail.style.border = '2px solid red';
   } else {
     emailError.style.display = 'none';
+    inputEmail.style.border = '2px solid transparent';
+    checkAlertInfo();
   }
 }
 
@@ -22,8 +38,11 @@ function checkPassword() {
   if (!regexPassword.test(password)) {
     passwordError.innerText = 'Mot de passe invalide';
     passwordError.style.display = 'block';
+    inputPassword.style.border = '2px solid red';
   } else {
     passwordError.style.display = 'none';
+    inputPassword.style.border = '2px solid transparent';
+    checkAlertInfo();
   }
 }
 
@@ -37,6 +56,12 @@ inputPassword.addEventListener('change', () => {
   checkPassword();
 });
 
+// Stocker le token dans le localStorage
+function setItem(key, value) {
+  window.localStorage.setItem(key, value);
+}
+
+// Envoyer la requête POST vers le serveur
 async function postLogin() {
   const data = {
     email: inputEmail.value.trim(),
@@ -46,13 +71,36 @@ async function postLogin() {
   try {
     const response = await fetch('http://localhost:5678/api/users/login', {
       method: 'POST',
-      Headers: { 'Content-Type': 'application/json' },
+      headers: { 'Content-Type': 'application/json' },
       body: JSON.stringify(data),
     });
+
+    if (!response.ok) {
+      let errorMessage;
+
+      switch (response.status) {
+        case 404:
+          errorMessage = "L'email n'existe pas.";
+          break;
+        case 401:
+          errorMessage = 'Le mot de passe est incorrect.';
+          break;
+        default:
+          errorMessage = `Erreur inattendue : ${response.statusText}`;
+      }
+
+      throw new Error(errorMessage);
+    }
+
     const responseData = await response.json();
-    console.log(responseData);
+    const userToken = responseData.token;
+    setItem('token', userToken);
+    window.location.href = '../FrontEnd/index.html';
   } catch (error) {
-    console.error('Error:', error);
+    alertInfo.innerText = error.message;
+    alertInfo.style.color = 'red';
+    buttonWrapper.insertBefore(alertInfo, passwordLink);
+    alertInfo.style.display = 'block';
   }
 }
 
@@ -69,9 +117,10 @@ function submitLogin() {
     ) {
       postLogin();
     } else {
-      console.log('Ne pas envoyer la requête');
+      alertInfo.innerText = 'Veuillez remplir tous les champs';
+      alertInfo.style.color = 'red';
+      buttonWrapper.insertBefore(alertInfo, passwordLink);
     }
   });
 }
-
 submitLogin();
