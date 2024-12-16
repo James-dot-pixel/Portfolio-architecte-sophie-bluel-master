@@ -80,3 +80,44 @@ async function getWorks() {
 }
 
 getWorks();
+
+function displayLogged() {
+  const token = window.localStorage.getItem('token');
+  console.log(token);
+  if (token !== null) {
+    // Afficher la bannière de mode édition
+    const body = document.querySelector('body');
+    const editBanner = document.createElement('div');
+    editBanner.id = 'edition-banner';
+    const editBannerIcon = document.createElement('img');
+    editBannerIcon.src = 'assets/icons/edit.png';
+    const editBannerText = document.createElement('p');
+    editBannerText.innerText = 'Mode édition';
+    body.appendChild(editBanner);
+    editBanner.appendChild(editBannerIcon);
+    editBanner.appendChild(editBannerText);
+    body.style.marginTop = '97px';
+    // Afficher le bouton d'édition
+    const portfolio = document.getElementById('portfolio');
+    const tabs = document.querySelector('.tabs');
+    const heading = document.querySelector('#portfolio h2');
+    const headingWrapper = document.createElement('div');
+    headingWrapper.id = 'heading-wrapper';
+    const editButton = document.createElement('a');
+    editButton.id = 'edit-button';
+    const editIcon = document.createElement('img');
+    editIcon.src = 'assets/icons/edit-black.png';
+    const editText = document.createElement('p');
+    editText.innerText = 'modifier';
+    portfolio.insertBefore(headingWrapper, tabs);
+    editButton.appendChild(editIcon);
+    editButton.appendChild(editText);
+    headingWrapper.appendChild(heading);
+    headingWrapper.appendChild(editButton);
+    // Changer login pour logout
+    const loginLink = document.getElementById('login-link');
+    loginLink.innerText = 'logout';
+  }
+}
+
+displayLogged();
