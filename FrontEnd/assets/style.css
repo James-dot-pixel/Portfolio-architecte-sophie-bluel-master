@@ -143,6 +143,11 @@ body {
 	background-color: #FFFEF8;
 }
 
+a {
+	color: #000000;
+	text-decoration: none;
+}
+
 header {
 	display: flex;
 	justify-content: space-between;
@@ -197,7 +202,7 @@ nav li {
 	font-size: 1.2em;
 }
 
-li:hover {
+li a:hover {
 	color: #B1663C;
 }
 
@@ -253,7 +258,11 @@ li:hover {
 	gap: 0.6em;
 }
 
-.tabs ul li {
+.tabs li {
+	padding: 0;
+}
+
+.tabs a {
 	display: flex;
 	align-items: center;
 	height: 37px;
@@ -268,7 +277,7 @@ li:hover {
 	color: #1D6154;
 }
 
-.tabs ul li:hover {
+.tabs a:hover {
 	background-color: #1D6154;
 	color: #FFFEF8;
 	cursor: pointer;
