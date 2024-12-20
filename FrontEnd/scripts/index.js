@@ -1,4 +1,4 @@
-// Afficher les projets
+/* Afficher les projets */
 function createWorks(works) {
   for (let i = 0; i < works.length; i++) {
     const project = works[i];
@@ -15,7 +15,7 @@ function createWorks(works) {
   }
 }
 
-// Créer les onglets de filtrage par catégories
+/* Créer les onglets de filtrage par catégories */
 function createTabs(works) {
   // Récupérer les catégories
   const categoriesNames = works.map((work) => work.category.name);
@@ -40,7 +40,7 @@ function createTabs(works) {
   });
 }
 
-// Filtrer les projets par catégorie
+/* Filtrer les projets par catégorie */
 function filterWorks(works) {
   // Récupérer la gallerie de projet
   const gallery = document.querySelector('.gallery');
@@ -66,7 +66,35 @@ function filterWorks(works) {
   });
 }
 
-// Récupérer les projets depuis l'API
+/* Afficher les prévisualisations des projets dans la galerie de la modale */
+function createPreviews(works) {
+  const modalGallery = document.querySelector('.modal-gallery');
+  works.forEach((project) => {
+    const previewWrapper = document.createElement('div');
+    previewWrapper.classList.add('preview-wrapper');
+
+    // Créer une img avec la classe "preview-img" et définir sa source
+    const previewImg = document.createElement('img');
+    previewImg.classList.add('preview-img');
+    previewImg.src = project.imageUrl;
+
+    // Créer un div avec la classe "delete-button"
+    const deleteButton = document.createElement('div');
+    deleteButton.classList.add('delete-button');
+
+    // Créer une img pour le bouton de suppression et définir sa source
+    const deleteIcon = document.createElement('img');
+    deleteIcon.src = 'assets/icons/trash-can-solid.svg';
+
+    // Ajouter les éléments à la galerie de la modale
+    modalGallery.appendChild(previewWrapper);
+    previewWrapper.appendChild(previewImg);
+    previewWrapper.appendChild(deleteButton);
+    deleteButton.appendChild(deleteIcon);
+  });
+}
+
+/* Récupérer les projets depuis l'API */
 async function getWorks() {
   try {
     const response = await fetch('http://localhost:5678/api/works');
@@ -74,6 +102,7 @@ async function getWorks() {
     createTabs(works);
     createWorks(works);
     filterWorks(works);
+    createPreviews(works);
   } catch (error) {
     console.error(`Une erreur est survenue : ${error}`);
   }
@@ -81,7 +110,7 @@ async function getWorks() {
 
 getWorks();
 
-// Afficher la bannière de mode édition
+/* Afficher la bannière de mode édition */
 function createEditBanner() {
   const body = document.querySelector('body');
   const editBanner = document.createElement('div');
@@ -96,7 +125,7 @@ function createEditBanner() {
   body.style.marginTop = '97px';
 }
 
-// Afficher le bouton d'édition
+/* Afficher le bouton d'édition */
 function createEditButton() {
   const portfolio = document.getElementById('portfolio');
   const tabs = document.querySelector('.tabs');
@@ -116,7 +145,7 @@ function createEditButton() {
   headingWrapper.appendChild(editButton);
 }
 
-// Changer bouton login pour logout
+/* Changer bouton login pour logout */
 function changeLoginToLogout() {
   const loginLink = document.getElementById('login-link');
   loginLink.innerText = 'logout';
@@ -127,12 +156,38 @@ function changeLoginToLogout() {
   });
 }
 
+/* Ajouter l'ouverture et fermeture de la modale */
+function addModalInteractions() {
+  const modalFirst = document.getElementById('modal-1');
+  const closeButton = document.querySelector('.close-button');
+  const modal = document.querySelector('.modal');
+  // Fonction pour afficher la modale
+  function showModal() {
+    modalFirst.style.display = 'block';
+  }
+  // Afficher la modale au clic sur le bouton "modifier"
+  document.querySelector('#edit-button').addEventListener('click', showModal);
+  // Fonction pour fermer la modale
+  function closeModal(event) {
+    // Vérifie si le clic est en dehors de modal-content ou sur la close-button
+    if (!event.target.closest('.modal-content')) {
+      modal.style.display = 'none';
+    }
+  }
+  closeButton.addEventListener('click', () => {
+    modal.style.display = 'none';
+  });
+  modal.addEventListener('click', closeModal);
+}
+
+/* Afficher les éléments du statut "connecté" */
 function displayLogged() {
   const token = window.localStorage.getItem('token');
   if (token !== null) {
     createEditBanner();
     createEditButton();
     changeLoginToLogout();
+    addModalInteractions();
   }
 }
 
