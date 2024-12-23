@@ -66,6 +66,32 @@ function filterWorks(works) {
   });
 }
 
+/* Fonction pour supprimer un projet */
+async function deleteProject(projectId) {
+  const apiUrl = `http://localhost:5678/api/works/${projectId}`;
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to delete project with id ${projectId}`);
+    }
+    // Récupérer les projets mis à jour depuis l'API
+    const updatedWorks = await fetch('http://localhost:5678/api/works');
+    const works = await updatedWorks.json();
+    // Mettre à jour la galerie et les onglets de filtres
+    createTabs(works);
+    createWorks(works);
+    filterWorks(works);
+    console.log(`Project with id ${projectId} deleted successfully`);
+  } catch (error) {
+    console.error(`Error deleting project with id ${projectId}:`, error);
+  }
+}
+
 /* Afficher les prévisualisations des projets dans la galerie de la modale */
 function createPreviews(works) {
   const modalGallery = document.querySelector('.modal-gallery');
@@ -79,8 +105,9 @@ function createPreviews(works) {
     previewImg.src = project.imageUrl;
 
     // Créer un div avec la classe "delete-button"
-    const deleteButton = document.createElement('div');
+    const deleteButton = document.createElement('button');
     deleteButton.classList.add('delete-button');
+    deleteButton.addEventListener('click', () => deleteProject(project.id));
 
     // Créer une img pour le bouton de suppression et définir sa source
     const deleteIcon = document.createElement('img');
@@ -156,28 +183,59 @@ function changeLoginToLogout() {
   });
 }
 
-/* Ajouter l'ouverture et fermeture de la modale */
+/* Ajouter les interactions d'ouverture et fermeture avec les modales */
 function addModalInteractions() {
   const modalFirst = document.getElementById('modal-1');
-  const closeButton = document.querySelector('.close-button');
-  const modal = document.querySelector('.modal');
+  const modalSecond = document.getElementById('modal-2');
+  const closeButtons = document.querySelectorAll('.modal-button.close');
+  const modals = document.querySelectorAll('.modal');
+  const addButton = document.getElementById('add-button');
+  const previousButton = document.getElementById('previous-button');
+
   // Fonction pour afficher la modale
   function showModal() {
     modalFirst.style.display = 'block';
   }
+
   // Afficher la modale au clic sur le bouton "modifier"
   document.querySelector('#edit-button').addEventListener('click', showModal);
-  // Fonction pour fermer la modale
-  function closeModal(event) {
-    // Vérifie si le clic est en dehors de modal-content ou sur la close-button
+
+  // Fonction pour fermer une modale
+  function closeModal(modalElement) {
+    const targetModal = modalElement;
+    targetModal.style.display = 'none';
+  }
+
+  // Fonction pour détecter les clics en dehors de "modal-content"
+  function outsideClick(event, modal) {
     if (!event.target.closest('.modal-content')) {
-      modal.style.display = 'none';
+      closeModal(modal);
     }
   }
-  closeButton.addEventListener('click', () => {
-    modal.style.display = 'none';
+
+  // Ajouter les événements de fermeture à chaque modale
+  modals.forEach((modal) => {
+    modal.addEventListener('click', (event) => outsideClick(event, modal));
   });
-  modal.addEventListener('click', closeModal);
+
+  closeButtons.forEach((button) => {
+    button.addEventListener('click', (event) => {
+      const modal = event.target.closest('.modal');
+      closeModal(modal);
+    });
+  });
+
+  // Ouvrir la deuxième modale et fermer la première
+  addButton.addEventListener('click', () => {
+    modalFirst.style.display = 'none';
+    modalSecond.style.display = 'block';
+  });
+
+  // Revenir à la première modale depuis la deuxième
+  previousButton.addEventListener('click', () => {
+    modalSecond.style.display = 'none';
+    modalFirst.style.display = 'block';
+  });
 }
 
 /* Afficher les éléments du statut "connecté" */

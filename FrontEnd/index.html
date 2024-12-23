@@ -16,7 +16,7 @@
 
 <body>
 	<header>
-		<h1>Sophie Bluel <div>Architecte d'intérieur</div>
+		<h1>Sophie Bluel <span>Architecte d'intérieur</span>
 		</h1>
 		<nav>
 			<ul>
@@ -71,14 +71,39 @@
 		</nav>
 	</footer>
 	<div id="modal-1" class="modal">
-		<div class="modal-content ignore-modal-close ">
-			<div class="close-button">
+		<div class="modal-content">
+			<button class="modal-button close">
 				<img src="assets/icons/xmark.svg" alt="">
-			</div>
-			<h2 class="modal-heading ignore-modal-close">Galerie photo</h2>
-			<div class="modal-gallery ignore-modal-close"></div>
+			</button>
+			<h2 class="modal-heading">Galerie photo</h2>
+			<div class="modal-gallery"></div>
 			<div class="separator"></div>
-			<input class="ignore-modal-close" type="submit" value="Ajouter une photo">
+			<input id="add-button" type="submit" value="Ajouter une photo">
+		</div>
+	</div>
+	<div id="modal-2" class="modal" style="display: block;">
+		<div class="modal-content ">
+			<button class="modal-button close">
+				<img src="assets/icons/xmark.svg" alt="">
+			</button>
+			<button id="previous-button" class="modal-button previous">
+				<img src="assets/icons/arrow-left.svg" alt="">
+			</button>
+			<h2 class="modal-heading">Ajout photo</h2>
+			<div class="img-upload-zone">
+				<img class="img-placeholder" src="assets/icons/img-placeholder.svg" alt="">
+				<button>+ Ajouter photo</button>
+				<p>jpg, png : 4mo max</p>
+			</div>
+			<form action="">
+				<label for="title">Titre</label>
+				<input type="text" name="title" id="title">
+				<label for="categories">Catégories</label>
+				<select name="categories" id="categories">
+				</select>
+				<div class="separator"></div>
+				<input type="submit" value="Valider">
+			</form>
 		</div>
 	</div>
 </body>

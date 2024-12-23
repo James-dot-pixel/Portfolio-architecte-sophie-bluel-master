@@ -185,6 +185,13 @@ h2 {
 	color: #1D6154
 }
 
+select {
+	height: 50px;
+	padding: 0 20px;
+	font-size: 1.2em;
+	border: 2px solid transparent;
+	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+}
 
 .login-buttons-wrapper a {
 	color: #3D3D3D;
@@ -388,20 +395,31 @@ footer nav ul {
 	box-sizing: border-box;
 }
 
-.close-button {
+.modal-button {
+	display: flex;
+	justify-content: center;
+	align-items: center;
 	position: absolute;
-	top: 0.75em;
-	right: 1em;
-	color: #000000;
-	font-size: 28px;
-	font-weight: bold;
+	width: 24px;
+	height: 24px;
+	background-color: transparent;
+	border: none;
 }
 
-.close-button:hover,
-.close-button:focus {
+.modal-button:hover {
 	color: rgb(255, 0, 0);
 	text-decoration: none;
 	cursor: pointer;
+}
+
+.close {
+	top: 30px;
+	right: 30px;
+}
+
+.previous {
+	top: 30px;
+	left: 30px;
 }
 
 .modal h2 {
@@ -462,6 +480,40 @@ footer nav ul {
 	cursor: pointer;
 }
 
+.img-upload-zone {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	margin-top: 36px;
+	gap: 7px;
+	padding: 19px;
+	background: #E8F1F7;
+	border-radius: 3px;
+}
+
+.img-placeholder {
+	width: 76px;
+	height: 76px;
+}
+
+.img-upload-zone button {
+	padding: 10px 33px;
+	background: #CBD6DC;
+	border-radius: 50px;
+	color: #306685;
+	border: none;
+	font-family: 'Work Sans';
+	font-weight: 500;
+	font-size: 14px;
+	line-height: 16px;
+}
+
+#modal-2 form {
+	display: flex;
+	flex-direction: column;
+}
+
 /***** Login Page *****/
 
 .body-full-height {
@@ -498,7 +550,7 @@ footer nav ul {
 	color: #1D6154;
 }
 
-#login label {
+label {
 	margin: 2em 0 0.5em 0;
 	font-family: 'Work Sans';
 	font-style: normal;
@@ -508,9 +560,8 @@ footer nav ul {
 	color: #3D3D3D;
 }
 
-#login input {
+input {
 	height: 50px;
-	width: 379px;
 	font-size: 1.2em;
 	border: 2px solid transparent;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
