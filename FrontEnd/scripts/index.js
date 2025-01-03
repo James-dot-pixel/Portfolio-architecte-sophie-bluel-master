@@ -1,5 +1,31 @@
-/* Afficher les projets */
-function createWorks(works) {
+/* RÉCUPÉRER LES PROJETS DEPUIS L'API ET LES STOCKER DANS UNE VARIABLE */
+let works = null;
+
+async function getWorks() {
+  try {
+    const response = await fetch('http://localhost:5678/api/works');
+    const data = await response.json();
+    works = data;
+  } catch (error) {
+    console.error(`Une erreur est survenue : ${error}`);
+  }
+}
+
+/* RÉCUPÉRER LES CATÉGORIES DEPUIS L'API ET LES STOCKER DANS UNE VARIABLE */
+let categories = null;
+
+async function getCategories() {
+  try {
+    const response = await fetch('http://localhost:5678/api/categories');
+    const data = await response.json();
+    categories = data;
+  } catch (error) {
+    console.error(`Une erreur est survenue : ${error}`);
+  }
+}
+
+/* MAIN - AFFICHER LES PROJETS */
+function createWorks() {
   for (let i = 0; i < works.length; i++) {
     const project = works[i];
     const gallery = document.querySelector('.gallery');
@@ -15,8 +41,8 @@ function createWorks(works) {
   }
 }
 
-/* Créer les onglets de filtrage par catégories */
-function createTabs(works) {
+/* MAIN - CRÉER LES ONGLETS DE FILTRAGE PAR CATÉGORIES */
+function createTabs() {
   // Récupérer les catégories
   const categoriesNames = works.map((work) => work.category.name);
   const projectsCategories = new Set(categoriesNames);
@@ -40,8 +66,8 @@ function createTabs(works) {
   });
 }
 
-/* Filtrer les projets par catégorie */
-function filterWorks(works) {
+/* MAIN - FILTRER LES PROJETS PAR CATÉGORIE */
+function filterWorks() {
   // Récupérer la gallerie de projet
   const gallery = document.querySelector('.gallery');
   // Récupérer les liens des tabs
@@ -49,13 +75,10 @@ function filterWorks(works) {
   // Filtrer la gallerie par catégorie
   tabs.forEach((tab) => {
     tab.addEventListener('click', (event) => {
-      console.log(event.target.innerText);
       if (event.target.innerText === 'Tous') {
-        console.log('Tous');
         gallery.innerHTML = '';
         createWorks(works);
       } else {
-        console.log('Filtre');
         const worksFiltered = works.filter(
           (work) => work.category.name === event.target.innerText,
         );
@@ -66,98 +89,7 @@ function filterWorks(works) {
   });
 }
 
-/* Fonction pour supprimer un projet */
-async function deleteWorks(projectId) {
-  const apiUrl = `http://localhost:5678/api/works/${projectId}`;
-  try {
-    const response = await fetch(apiUrl, {
-      method: 'DELETE',
-      headers: {
-        Authorization: `Bearer ${localStorage.getItem('token')}`,
-      },
-    });
-    if (!response.ok) {
-      throw new Error(`Failed to delete project with id ${projectId}`);
-    }
-    // Récupérer les projets mis à jour depuis l'API
-    const updatedWorks = await fetch('http://localhost:5678/api/works');
-    const works = await updatedWorks.json();
-    // Mettre à jour la galerie et les onglets de filtres
-    createTabs(works);
-    createWorks(works);
-    filterWorks(works);
-    console.log(`Project with id ${projectId} deleted successfully`);
-  } catch (error) {
-    console.error(`Error deleting project with id ${projectId}:`, error);
-  }
-}
-
-/* Afficher les prévisualisations des projets dans la galerie de la modale */
-function createPreviews(works) {
-  const modalGallery = document.querySelector('.modal-gallery');
-  works.forEach((project) => {
-    const previewWrapper = document.createElement('div');
-    previewWrapper.classList.add('preview-wrapper');
-
-    // Créer une img avec la classe "preview-img" et définir sa source
-    const previewImg = document.createElement('img');
-    previewImg.classList.add('preview-img');
-    previewImg.src = project.imageUrl;
-
-    // Créer un div avec la classe "delete-button"
-    const deleteButton = document.createElement('button');
-    deleteButton.classList.add('delete-button');
-    deleteButton.addEventListener('click', () => deleteWorks(project.id));
-
-    // Créer une img pour le bouton de suppression et définir sa source
-    const deleteIcon = document.createElement('img');
-    deleteIcon.src = 'assets/icons/trash-can-solid.svg';
-
-    // Ajouter les éléments à la galerie de la modale
-    modalGallery.appendChild(previewWrapper);
-    previewWrapper.appendChild(previewImg);
-    previewWrapper.appendChild(deleteButton);
-    deleteButton.appendChild(deleteIcon);
-  });
-}
-
-/* Récupérer les projets depuis l'API */
-async function getWorks() {
-  try {
-    const response = await fetch('http://localhost:5678/api/works');
-    const works = await response.json();
-    createTabs(works);
-    createWorks(works);
-    filterWorks(works);
-    createPreviews(works);
-  } catch (error) {
-    console.error(`Une erreur est survenue : ${error}`);
-  }
-}
-
-/* Ajouter les catégories des projets à l'élément select */
-function fillCategoriesSelect(categories) {
-  const categoriesSelect = document.getElementById('categories');
-  categories.forEach((categorie) => {
-    const option = document.createElement('option');
-    option.value = categorie.id;
-    option.text = categorie.name;
-    categoriesSelect.appendChild(option);
-  });
-}
-
-/* Récupérer les categories depuis l'API */
-async function getCategories() {
-  try {
-    const response = await fetch('http://localhost:5678/api/categories');
-    const categories = await response.json();
-    fillCategoriesSelect(categories);
-  } catch (error) {
-    console.error(`Une erreur est survenue : ${error}`);
-  }
-}
-
-/* Afficher la bannière de mode édition */
+/* STATUT "CONNECTÉ" - Afficher la bannière de mode édition */
 function createEditBanner() {
   const body = document.querySelector('body');
   const editBanner = document.createElement('div');
@@ -172,7 +104,7 @@ function createEditBanner() {
   body.style.marginTop = '97px';
 }
 
-/* Afficher le bouton d'édition */
+/* STATUT "CONNECTÉ" - Afficher le bouton d'édition */
 function createEditButton() {
   const portfolio = document.getElementById('portfolio');
   const tabs = document.querySelector('.tabs');
@@ -192,7 +124,7 @@ function createEditButton() {
   headingWrapper.appendChild(editButton);
 }
 
-/* Changer bouton login pour logout */
+/* STATUT "CONNECTÉ" - Changer bouton login pour logout */
 function changeLoginToLogout() {
   const loginLink = document.getElementById('login-link');
   loginLink.innerText = 'logout';
@@ -203,41 +135,182 @@ function changeLoginToLogout() {
   });
 }
 
-/* Ajouter les interactions des modales */
-function addModalInteractions() {
-  const modalFirst = document.getElementById('modal-1');
-  const modalSecond = document.getElementById('modal-2');
-  const closeButtons = document.querySelectorAll('.modal-button.close');
-  const modals = document.querySelectorAll('.modal');
-  const addButton = document.getElementById('add-button');
-  const previousButton = document.getElementById('previous-button');
+/* MODALES - VARIABLES */
+const modalFirst = document.getElementById('modal-1');
+const modalSecond = document.getElementById('modal-2');
+const closeButtons = document.querySelectorAll('.modal-button.close');
+const modals = document.querySelectorAll('.modal');
+const addButton = document.getElementById('add-button');
+const previousButton = document.getElementById('previous-button');
 
-  // Fonction pour afficher la modale
-  function showModal() {
-    modalFirst.style.display = 'flex';
+/* MODALES - AFFICHER LA PREMIÈRE MODALE */
+function showModal() {
+  modalFirst.style.display = 'flex';
+}
+
+/* MODALES - FERMER UNE MODALE */
+function closeModal(modalElement) {
+  const targetModal = modalElement;
+  targetModal.style.display = 'none';
+}
+
+/* MODALES - DÉTECTER LES CLICS EN DEHORS DES MODALES */
+function outsideClick(event, modal) {
+  if (!event.target.closest('.modal-content')) {
+    closeModal(modal);
   }
+}
 
-  // Afficher la modale au clic sur le bouton "modifier"
+/* MODALE 1 - SUPPRIMER UN PROJET */
+async function deleteWorks(projectId) {
+  const apiUrl = `http://localhost:5678/api/works/${projectId}`;
+  try {
+    const response = await fetch(apiUrl, {
+      method: 'DELETE',
+      headers: {
+        Authorization: `Bearer ${localStorage.getItem('token')}`,
+      },
+    });
+    if (!response.ok) {
+      throw new Error(`Failed to delete project with id ${projectId}`);
+    }
+    // Récupérer les projets mis à jour depuis l'API
+    const updatedWorks = await fetch('http://localhost:5678/api/works');
+    works = await updatedWorks.json();
+    // Mettre à jour la galerie et les onglets de filtres
+    createTabs(works);
+    createWorks(works);
+    filterWorks(works);
+    console.log(`Project with id ${projectId} deleted successfully`);
+  } catch (error) {
+    console.error(`Error deleting project with id ${projectId}:`, error);
+  }
+}
+
+async function handleDelete(event, projectId) {
+  event.preventDefault();
+  await deleteWorks(projectId);
+}
+
+/* MODALE 1 - AFFICHER LES PRÉVISUALISATIONS DES PROJETS */
+function createPreviews() {
+  const modalGallery = document.querySelector('.modal-gallery');
+  works.forEach((project) => {
+    const previewWrapper = document.createElement('div');
+    previewWrapper.classList.add('preview-wrapper');
+
+    // Créer une img avec la classe "preview-img" et définir sa source
+    const previewImg = document.createElement('img');
+    previewImg.classList.add('preview-img');
+    previewImg.src = project.imageUrl;
+
+    // Créer un div avec la classe "delete-button"
+    const deleteButton = document.createElement('button');
+    deleteButton.classList.add('delete-button');
+    deleteButton.addEventListener('click', (event) =>
+      handleDelete(event, project.id),
+    );
+
+    // Créer une img pour le bouton de suppression et définir sa source
+    const deleteIcon = document.createElement('img');
+    deleteIcon.src = 'assets/icons/trash-can-solid.svg';
+
+    // Ajouter les éléments à la galerie de la modale
+    modalGallery.appendChild(previewWrapper);
+    previewWrapper.appendChild(previewImg);
+    previewWrapper.appendChild(deleteButton);
+    deleteButton.appendChild(deleteIcon);
+  });
+}
+
+/* MODALE 2 - AJOUTER LES CATÉGORIES DES PROJETS AU SELECT */
+function fillCategoriesSelect() {
+  const categoriesSelect = document.getElementById('category');
+  categories.forEach((categorie) => {
+    const option = document.createElement('option');
+    option.setAttribute('value', categorie.id);
+    option.text = categorie.name;
+    categoriesSelect.appendChild(option);
+  });
+}
+
+/* MODALE 2 - ACTIVER LE BOUTON SUBMIT */
+function enableSubmit(fileError, titleError) {
+  const inputSubmitWork = document.getElementById('input-submit-work');
+  if (fileError.innerText === '' && titleError.style.display === 'none') {
+    inputSubmitWork.removeAttribute('disabled');
+    inputSubmitWork.removeAttribute('title');
+    inputSubmitWork.classList.remove('button-disabled');
+  }
+}
+
+/* MODALE 2 - VÉRIFIER L'IMAGE ET AFFICHER LA PRÉVISUALISATION */
+function checkFile() {
+  const fileInput = document.getElementById('image');
+  fileInput.addEventListener('change', (event) => {
+    const file = event.target.files[0];
+    const fileError = document.getElementById('upload-error');
+    const titleError = document.getElementById('title-error');
+
+    // Vérifier si l'image est en jpg ou png
+    if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+      fileError.innerText = 'Veuillez importer une image (JPEG ou PNG)';
+      fileError.style.display = 'block';
+      return;
+    }
+
+    // Vérifier si la taille de l'image est inférieure a 4Mo
+    const maxSizeMB = 4;
+    const maxSizeMO = maxSizeMB * 1024 * 1024;
+    if (file.size > maxSizeMO) {
+      fileError.innerText = 'Veuillez importer une image inférieure a 4Mo';
+      fileError.style.display = 'block';
+      return;
+    }
+
+    const reader = new FileReader();
+    reader.onload = (element) => {
+      const imgPreview = document.getElementById('img-preview');
+      const imgUploadZoneContent = document.getElementById(
+        'img-upload-zone-content',
+      );
+      imgPreview.src = element.target.result;
+      imgPreview.style.display = 'block';
+      imgUploadZoneContent.style.display = 'none';
+    };
+    reader.readAsDataURL(file);
+    fileError.innerText = '';
+    enableSubmit(fileError, titleError);
+  });
+}
+
+/* MODALE 2 - VÉRIFIER LE TITRE */
+function checkTitle() {
+  const inputTitle = document.getElementById('title');
+  const titleError = document.getElementById('title-error');
+  const fileError = document.getElementById('upload-error');
+  inputTitle.addEventListener('blur', () => {
+    if (inputTitle.value === '') {
+      titleError.innerText = 'Veuillez ajouter un titre';
+      titleError.style.display = 'block';
+    } else {
+      titleError.style.display = 'none';
+    }
+    enableSubmit(fileError, titleError);
+  });
+}
+
+/* MODALES - AJOUTER LES INTÉRACTIONS */
+function addModalInteractions() {
+  // Afficher la première modale au clic sur le bouton "modifier"
   document.querySelector('#edit-button').addEventListener('click', showModal);
 
-  // Fonction pour fermer une modale
-  function closeModal(modalElement) {
-    const targetModal = modalElement;
-    targetModal.style.display = 'none';
-  }
-
-  // Fonction pour détecter les clics en dehors de "modal-content"
-  function outsideClick(event, modal) {
-    if (!event.target.closest('.modal-content')) {
-      closeModal(modal);
-    }
-  }
-
-  // Ajouter les événements de fermeture à chaque modale
+  // Fermer la modale au clic en dehors de la modale
   modals.forEach((modal) => {
     modal.addEventListener('click', (event) => outsideClick(event, modal));
   });
 
+  // Fermer la modale au clic sur bouton "fermer"
   closeButtons.forEach((button) => {
     button.addEventListener('click', (event) => {
       const modal = event.target.closest('.modal');
@@ -245,88 +318,24 @@ function addModalInteractions() {
     });
   });
 
-  // Ouvrir la deuxième modale et fermer la première
+  // Ouvrir la deuxième modale et fermer la première au clic sur bouton "Ajouter une photo"
   addButton.addEventListener('click', () => {
     modalFirst.style.display = 'none';
     modalSecond.style.display = 'flex';
   });
 
-  // Revenir à la première modale depuis la deuxième
+  // Revenir à la première modale depuis la deuxième au clic sur bouton précédent
   previousButton.addEventListener('click', () => {
     modalSecond.style.display = 'none';
     modalFirst.style.display = 'flex';
   });
-
-  /* Activer le bouton submit */
-  function enableSubmit(fileError, titleError) {
-    const inputSubmitWork = document.getElementById('input-submit-work');
-    if (fileError.innerText === '' && titleError.style.display === 'none') {
-      inputSubmitWork.removeAttribute('disabled');
-      inputSubmitWork.removeAttribute('title');
-      inputSubmitWork.classList.remove('button-disabled');
-    }
-  }
-
-  /* Vérifier l'image et afficher la preview */
-  function checkFile() {
-    const fileInput = document.getElementById('img-file-input');
-    fileInput.addEventListener('change', (event) => {
-      const file = event.target.files[0];
-      const fileError = document.getElementById('upload-error');
-      const titleError = document.getElementById('title-error');
-
-      // Vérifier si l'image est en jpg ou png
-      if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
-        fileError.innerText = 'Veuillez importer une image (JPEG ou PNG)';
-        fileError.style.display = 'block';
-        return;
-      }
-
-      // Vérifier si la taille de l'image est inférieure a 4Mo
-      const maxSizeMB = 4;
-      const maxSizeMO = maxSizeMB * 1024 * 1024;
-      if (file.size > maxSizeMO) {
-        fileError.innerText = 'Veuillez importer une image inférieure a 4Mo';
-        fileError.style.display = 'block';
-        return;
-      }
-
-      const reader = new FileReader();
-      reader.onload = (element) => {
-        const imgPreview = document.getElementById('img-preview');
-        const imgUploadZoneContent = document.getElementById(
-          'img-upload-zone-content',
-        );
-        imgPreview.src = element.target.result;
-        imgPreview.style.display = 'block';
-        imgUploadZoneContent.style.display = 'none';
-      };
-      reader.readAsDataURL(file);
-      fileError.innerText = '';
-      enableSubmit(fileError, titleError);
-    });
-  }
+  createPreviews();
   checkFile();
-
-  /* Vérifier le titre */
-  function checkTitle() {
-    const inputTitle = document.getElementById('title');
-    const titleError = document.getElementById('title-error');
-    const fileError = document.getElementById('upload-error');
-    inputTitle.addEventListener('blur', () => {
-      if (inputTitle.value === '') {
-        titleError.innerText = 'Veuillez ajouter un titre';
-        titleError.style.display = 'block';
-      } else {
-        titleError.style.display = 'none';
-      }
-      enableSubmit(fileError, titleError);
-    });
-  }
   checkTitle();
+  fillCategoriesSelect();
 }
 
-/* Afficher les éléments du statut "connecté" */
+/* STATUT "CONNECTÉ" - AFFICHER LES ÉLÉMENTS ET INTERACTIONS */
 function displayLogged() {
   const token = window.localStorage.getItem('token');
   if (token !== null) {
@@ -336,29 +345,16 @@ function displayLogged() {
     addModalInteractions();
   }
 }
-displayLogged();
 
-/* Ajouter un projet */
+/* STATUT "CONNECTÉ" - AJOUTER UN PROJET */
 async function addWork() {
   const form = document.getElementById('add-work-form');
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
     const formData = new FormData(form);
     console.log(formData);
-    /* const titleInput = document.getElementById('title');
-    const categoriesSelect = document.getElementById('categories');
-    const fileInput = document.getElementById('img-file-input'); */
-
-    // Récupérer les données du formulaire
-    /* const title = titleInput.value;
-    const categoryId = categoriesSelect.value;
-    const file = fileInput.files[0]; */
-
-    // Créer un objet FormData
-    /* const formData = new FormData();
-    formData.append('image', file);
-    formData.append('title', title);
-    formData.append('category', categoryId); */
+    const titleInput = document.getElementById('title');
+    const fileInput = document.getElementById('img-file-input');
 
     try {
       const response = await fetch('http://localhost:5678/api/works', {
@@ -370,11 +366,6 @@ async function addWork() {
         body: formData,
       });
       console.log(response);
-      /* if (!response.ok) {
-        const errorDetails = await response.text();
-        throw new Error(`Erreur lors de l'ajout du projet : ${errorDetails}`);
-      }
-
       const result = await response.json();
       console.log('Projet ajouté avec succès :', result);
 
@@ -384,10 +375,10 @@ async function addWork() {
       document.getElementById('img-preview').style.display = 'none';
       document.getElementById('img-upload-zone-content').style.display = 'flex';
 
-      const updatedWorks = await fetch('http://localhost:5678/api/works');
-      const works = await updatedWorks.json();
+      // Actualiser la galerie
       document.querySelector('.gallery').innerHTML = '';
-      createWorks(works); */
+      // await getWorks();
+      // createWorks();
     } catch (error) {
       console.error('Erreur :', error);
       console.log("Une erreur est survenue lors de l'ajout du projet.");
@@ -395,8 +386,14 @@ async function addWork() {
   });
 }
 
+/* ATTENDRE LE CHARGEMENT COMPLET DU DOM ET EXECUTER LES FONCTIONS */
 document.addEventListener('DOMContentLoaded', async () => {
-  getWorks();
-  getCategories();
+  // Attendre la récupération des projets et des catégories
+  await getWorks();
+  await getCategories();
+  createTabs();
+  createWorks();
+  filterWorks();
+  displayLogged();
   addWork();
 });

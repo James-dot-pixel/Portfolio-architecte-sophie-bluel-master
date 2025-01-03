@@ -95,8 +95,8 @@
 					<div id="img-upload-zone-content">
 						<img class="img-placeholder" src="assets/icons/img-placeholder.svg" alt="">
 						<div class="custom-file-upload">
-							<label for="img-file-input" id="file-upload-button">+ Ajouter photo</label>
-							<input id="img-file-input" type="file" style="display: none;">
+							<label for="image" id="file-upload-button">+ Ajouter photo</label>
+							<input type="file" id="image" name="image" accept="image/*" style="display: none;" required>
 						</div>
 						<p>jpg, png : 4mo max</p>
 						<p id="upload-error" class="error">Ceci est une erreur</p>
@@ -104,10 +104,10 @@
 					<img id="img-preview" src="" alt="">
 				</div>
 				<label for="title">Titre</label>
-				<input type="text" name="title" id="title">
+				<input type="text" id="title" name="title">
 				<p id="title-error" class="error">Ceci est une erreur</p>
-				<label for="categories">Catégories</label>
-				<select name="categories" id="categories">
+				<label for="category">Catégories</label>
+				<select id="category" name="category">
 				</select>
 				<div class="separator"></div>
 				<input id="input-submit-work" class="button-disabled" type="submit" value="Valider"
