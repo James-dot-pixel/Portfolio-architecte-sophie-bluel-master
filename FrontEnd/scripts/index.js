@@ -67,7 +67,7 @@ function filterWorks(works) {
 }
 
 /* Fonction pour supprimer un projet */
-async function deleteProject(projectId) {
+async function deleteWorks(projectId) {
   const apiUrl = `http://localhost:5678/api/works/${projectId}`;
   try {
     const response = await fetch(apiUrl, {
@@ -107,7 +107,7 @@ function createPreviews(works) {
     // Créer un div avec la classe "delete-button"
     const deleteButton = document.createElement('button');
     deleteButton.classList.add('delete-button');
-    deleteButton.addEventListener('click', () => deleteProject(project.id));
+    deleteButton.addEventListener('click', () => deleteWorks(project.id));
 
     // Créer une img pour le bouton de suppression et définir sa source
     const deleteIcon = document.createElement('img');
@@ -339,7 +339,7 @@ function displayLogged() {
 displayLogged();
 
 /* Ajouter un projet */
-async function addProject() {
+async function addWork() {
   const form = document.getElementById('add-work-form');
   form.addEventListener('submit', async (event) => {
     event.preventDefault();
@@ -398,5 +398,5 @@ async function addProject() {
 document.addEventListener('DOMContentLoaded', async () => {
   getWorks();
   getCategories();
-  addProject();
+  addWork();
 });
