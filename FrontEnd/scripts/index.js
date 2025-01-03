@@ -25,9 +25,9 @@ async function getCategories() {
 }
 
 /* MAIN - AFFICHER LES PROJETS */
-function createWorks() {
-  for (let i = 0; i < works.length; i++) {
-    const project = works[i];
+function createWorks(worksArray) {
+  for (let i = 0; i < worksArray.length; i++) {
+    const project = worksArray[i];
     const gallery = document.querySelector('.gallery');
     const projectFigure = document.createElement('figure');
     const projectImg = document.createElement('img');
@@ -187,11 +187,6 @@ async function deleteWorks(projectId) {
   }
 }
 
-async function handleDelete(event, projectId) {
-  event.preventDefault();
-  await deleteWorks(projectId);
-}
-
 /* MODALE 1 - AFFICHER LES PRÉVISUALISATIONS DES PROJETS */
 function createPreviews() {
   const modalGallery = document.querySelector('.modal-gallery');
@@ -207,9 +202,7 @@ function createPreviews() {
     // Créer un div avec la classe "delete-button"
     const deleteButton = document.createElement('button');
     deleteButton.classList.add('delete-button');
-    deleteButton.addEventListener('click', (event) =>
-      handleDelete(event, project.id),
-    );
+    deleteButton.addEventListener('click', () => deleteWorks(project.id));
 
     // Créer une img pour le bouton de suppression et définir sa source
     const deleteIcon = document.createElement('img');
@@ -392,7 +385,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await getWorks();
   await getCategories();
   createTabs();
-  createWorks();
+  createWorks(works);
   filterWorks();
   displayLogged();
   addWork();
