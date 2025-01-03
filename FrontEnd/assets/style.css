@@ -187,10 +187,15 @@ h2 {
 
 select {
 	height: 50px;
-	padding: 0 20px;
+	padding: 0 16px;
 	font-size: 1.2em;
 	border: 2px solid transparent;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	font-family: 'Work Sans';
+	font-weight: 400;
+	font-size: 14px;
+	color: #444444;
+	padding-left: 16px;
 }
 
 .login-buttons-wrapper a {
@@ -373,6 +378,8 @@ footer nav ul {
 
 .modal {
 	display: none;
+	justify-content: center;
+	align-items: center;
 	position: fixed;
 	z-index: 1;
 	left: 0;
@@ -387,7 +394,7 @@ footer nav ul {
 	display: flex;
 	flex-direction: column;
 	background-color: #ffffff;
-	margin: 15% auto;
+	margin: auto;
 	padding: 60px 105px 45px 105px;
 	width: 630px;
 	border-radius: 10px;
@@ -486,10 +493,17 @@ footer nav ul {
 	justify-content: center;
 	align-items: center;
 	margin-top: 36px;
-	gap: 7px;
-	padding: 19px;
 	background: #E8F1F7;
 	border-radius: 3px;
+}
+
+#img-upload-zone-content {
+	display: flex;
+	flex-direction: column;
+	justify-content: center;
+	align-items: center;
+	gap: 7px;
+	padding: 19px;
 }
 
 .img-placeholder {
@@ -497,7 +511,16 @@ footer nav ul {
 	height: 76px;
 }
 
-.img-upload-zone button {
+.custom-file-upload {
+	position: relative;
+	display: flex;
+}
+
+.custom-file-upload label {
+	margin: 0;
+}
+
+#file-upload-button {
 	padding: 10px 33px;
 	background: #CBD6DC;
 	border-radius: 50px;
@@ -507,6 +530,16 @@ footer nav ul {
 	font-weight: 500;
 	font-size: 14px;
 	line-height: 16px;
+	cursor: pointer;
+}
+
+#img-file-input {
+	display: none;
+}
+
+#img-preview {
+	display: none;
+	height: 178px;
 }
 
 #modal-2 form {
@@ -541,6 +574,7 @@ footer nav ul {
 #login form {
 	display: flex;
 	flex-direction: column;
+	width: 379px;
 }
 
 #login h1 {
@@ -562,9 +596,15 @@ label {
 
 input {
 	height: 50px;
-	font-size: 1.2em;
 	border: 2px solid transparent;
 	box-shadow: 0px 4px 14px rgba(0, 0, 0, 0.09);
+	font-family: 'Work Sans';
+	font-weight: 400;
+	font-size: 14px;
+	color: #444444;
+	padding-left: 16px;
+
+
 }
 
 #login input[type="submit"] {
@@ -642,4 +682,9 @@ input {
 	font-size: 14px;
 	line-height: 16px;
 	color: #000000;
+}
+
+.modal input[type="submit"].button-disabled {
+	background-color: #A7A7A7;
+	cursor: not-allowed;
 }

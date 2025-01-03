@@ -81,7 +81,7 @@
 			<input id="add-button" type="submit" value="Ajouter une photo">
 		</div>
 	</div>
-	<div id="modal-2" class="modal" style="display: block;">
+	<div id="modal-2" class="modal" style="display: none;">
 		<div class="modal-content ">
 			<button class="modal-button close">
 				<img src="assets/icons/xmark.svg" alt="">
@@ -90,19 +90,28 @@
 				<img src="assets/icons/arrow-left.svg" alt="">
 			</button>
 			<h2 class="modal-heading">Ajout photo</h2>
-			<div class="img-upload-zone">
-				<img class="img-placeholder" src="assets/icons/img-placeholder.svg" alt="">
-				<button>+ Ajouter photo</button>
-				<p>jpg, png : 4mo max</p>
-			</div>
-			<form action="">
+			<form id="add-work-form">
+				<div class="img-upload-zone">
+					<div id="img-upload-zone-content">
+						<img class="img-placeholder" src="assets/icons/img-placeholder.svg" alt="">
+						<div class="custom-file-upload">
+							<label for="img-file-input" id="file-upload-button">+ Ajouter photo</label>
+							<input id="img-file-input" type="file" style="display: none;">
+						</div>
+						<p>jpg, png : 4mo max</p>
+						<p id="upload-error" class="error">Ceci est une erreur</p>
+					</div>
+					<img id="img-preview" src="" alt="">
+				</div>
 				<label for="title">Titre</label>
 				<input type="text" name="title" id="title">
+				<p id="title-error" class="error">Ceci est une erreur</p>
 				<label for="categories">Catégories</label>
 				<select name="categories" id="categories">
 				</select>
 				<div class="separator"></div>
-				<input type="submit" value="Valider">
+				<input id="input-submit-work" class="button-disabled" type="submit" value="Valider"
+					title="Veuillez remplir tous les champs" disabled>
 			</form>
 		</div>
 	</div>

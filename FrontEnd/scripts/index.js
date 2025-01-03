@@ -135,7 +135,27 @@ async function getWorks() {
   }
 }
 
-getWorks();
+/* Ajouter les catégories des projets à l'élément select */
+function fillCategoriesSelect(categories) {
+  const categoriesSelect = document.getElementById('categories');
+  categories.forEach((categorie) => {
+    const option = document.createElement('option');
+    option.value = categorie.id;
+    option.text = categorie.name;
+    categoriesSelect.appendChild(option);
+  });
+}
+
+/* Récupérer les categories depuis l'API */
+async function getCategories() {
+  try {
+    const response = await fetch('http://localhost:5678/api/categories');
+    const categories = await response.json();
+    fillCategoriesSelect(categories);
+  } catch (error) {
+    console.error(`Une erreur est survenue : ${error}`);
+  }
+}
 
 /* Afficher la bannière de mode édition */
 function createEditBanner() {
@@ -183,7 +203,7 @@ function changeLoginToLogout() {
   });
 }
 
-/* Ajouter les interactions d'ouverture et fermeture avec les modales */
+/* Ajouter les interactions des modales */
 function addModalInteractions() {
   const modalFirst = document.getElementById('modal-1');
   const modalSecond = document.getElementById('modal-2');
@@ -194,7 +214,7 @@ function addModalInteractions() {
 
   // Fonction pour afficher la modale
   function showModal() {
-    modalFirst.style.display = 'block';
+    modalFirst.style.display = 'flex';
   }
 
   // Afficher la modale au clic sur le bouton "modifier"
@@ -228,14 +248,82 @@ function addModalInteractions() {
   // Ouvrir la deuxième modale et fermer la première
   addButton.addEventListener('click', () => {
     modalFirst.style.display = 'none';
-    modalSecond.style.display = 'block';
+    modalSecond.style.display = 'flex';
   });
 
   // Revenir à la première modale depuis la deuxième
   previousButton.addEventListener('click', () => {
     modalSecond.style.display = 'none';
-    modalFirst.style.display = 'block';
+    modalFirst.style.display = 'flex';
   });
+
+  /* Activer le bouton submit */
+  function enableSubmit(fileError, titleError) {
+    const inputSubmitWork = document.getElementById('input-submit-work');
+    if (fileError.innerText === '' && titleError.style.display === 'none') {
+      inputSubmitWork.removeAttribute('disabled');
+      inputSubmitWork.removeAttribute('title');
+      inputSubmitWork.classList.remove('button-disabled');
+    }
+  }
+
+  /* Vérifier l'image et afficher la preview */
+  function checkFile() {
+    const fileInput = document.getElementById('img-file-input');
+    fileInput.addEventListener('change', (event) => {
+      const file = event.target.files[0];
+      const fileError = document.getElementById('upload-error');
+      const titleError = document.getElementById('title-error');
+
+      // Vérifier si l'image est en jpg ou png
+      if (file.type !== 'image/jpeg' && file.type !== 'image/png') {
+        fileError.innerText = 'Veuillez importer une image (JPEG ou PNG)';
+        fileError.style.display = 'block';
+        return;
+      }
+
+      // Vérifier si la taille de l'image est inférieure a 4Mo
+      const maxSizeMB = 4;
+      const maxSizeMO = maxSizeMB * 1024 * 1024;
+      if (file.size > maxSizeMO) {
+        fileError.innerText = 'Veuillez importer une image inférieure a 4Mo';
+        fileError.style.display = 'block';
+        return;
+      }
+
+      const reader = new FileReader();
+      reader.onload = (element) => {
+        const imgPreview = document.getElementById('img-preview');
+        const imgUploadZoneContent = document.getElementById(
+          'img-upload-zone-content',
+        );
+        imgPreview.src = element.target.result;
+        imgPreview.style.display = 'block';
+        imgUploadZoneContent.style.display = 'none';
+      };
+      reader.readAsDataURL(file);
+      fileError.innerText = '';
+      enableSubmit(fileError, titleError);
+    });
+  }
+  checkFile();
+
+  /* Vérifier le titre */
+  function checkTitle() {
+    const inputTitle = document.getElementById('title');
+    const titleError = document.getElementById('title-error');
+    const fileError = document.getElementById('upload-error');
+    inputTitle.addEventListener('blur', () => {
+      if (inputTitle.value === '') {
+        titleError.innerText = 'Veuillez ajouter un titre';
+        titleError.style.display = 'block';
+      } else {
+        titleError.style.display = 'none';
+      }
+      enableSubmit(fileError, titleError);
+    });
+  }
+  checkTitle();
 }
 
 /* Afficher les éléments du statut "connecté" */
@@ -248,5 +336,67 @@ function displayLogged() {
     addModalInteractions();
   }
 }
-
 displayLogged();
+
+/* Ajouter un projet */
+async function addProject() {
+  const form = document.getElementById('add-work-form');
+  form.addEventListener('submit', async (event) => {
+    event.preventDefault();
+    const formData = new FormData(form);
+    console.log(formData);
+    /* const titleInput = document.getElementById('title');
+    const categoriesSelect = document.getElementById('categories');
+    const fileInput = document.getElementById('img-file-input'); */
+
+    // Récupérer les données du formulaire
+    /* const title = titleInput.value;
+    const categoryId = categoriesSelect.value;
+    const file = fileInput.files[0]; */
+
+    // Créer un objet FormData
+    /* const formData = new FormData();
+    formData.append('image', file);
+    formData.append('title', title);
+    formData.append('category', categoryId); */
+
+    try {
+      const response = await fetch('http://localhost:5678/api/works', {
+        method: 'POST',
+        headers: {
+          Authorization: `Bearer ${localStorage.getItem('token')}`,
+          accept: 'application/json',
+        },
+        body: formData,
+      });
+      console.log(response);
+      /* if (!response.ok) {
+        const errorDetails = await response.text();
+        throw new Error(`Erreur lors de l'ajout du projet : ${errorDetails}`);
+      }
+
+      const result = await response.json();
+      console.log('Projet ajouté avec succès :', result);
+
+      // Réinitialiser le formulaire et actualiser la galerie
+      titleInput.value = '';
+      fileInput.value = '';
+      document.getElementById('img-preview').style.display = 'none';
+      document.getElementById('img-upload-zone-content').style.display = 'flex';
+
+      const updatedWorks = await fetch('http://localhost:5678/api/works');
+      const works = await updatedWorks.json();
+      document.querySelector('.gallery').innerHTML = '';
+      createWorks(works); */
+    } catch (error) {
+      console.error('Erreur :', error);
+      console.log("Une erreur est survenue lors de l'ajout du projet.");
+    }
+  });
+}
+
+document.addEventListener('DOMContentLoaded', async () => {
+  getWorks();
+  getCategories();
+  addProject();
+});
