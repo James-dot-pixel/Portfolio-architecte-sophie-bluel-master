@@ -6,7 +6,9 @@ const buttonWrapper = document.querySelector('.login-buttons-wrapper');
 const passwordLink = document.querySelector('.login-buttons-wrapper a');
 const alertInfo = document.createElement('p');
 
-// Vérifier si l'alerte doit être affiché
+/**
+ * Vérifier si l'alerte doit être affiché
+ */
 function checkAlertInfo() {
   if (
     emailError.style.display === 'none' &&
@@ -16,7 +18,9 @@ function checkAlertInfo() {
   }
 }
 
-// Vérifier l'email
+/**
+ * Vérifier l'email
+ */
 function checkEmail() {
   const regexEmail = /^[a-z0-9._-]+@[a-z0-9.-]+\.[a-z]{2,}$/;
   const email = inputEmail.value.trim();
@@ -31,7 +35,9 @@ function checkEmail() {
   }
 }
 
-// Vérifier le mot de passe
+/**
+ * Vérifier le mot de passe
+ */
 function checkPassword() {
   const regexPassword = /^.{3,}$/;
   const password = inputPassword.value.trim();
@@ -46,22 +52,30 @@ function checkPassword() {
   }
 }
 
-// Vérifier l'email en temps réel
+/**
+ * Vérifier l'email en temps réel
+ */
 inputEmail.addEventListener('change', () => {
   checkEmail();
 });
 
-// Vérifier le mot de passe en temps réel
+/**
+ * Vérifier le mot de passe en temps réel
+ */
 inputPassword.addEventListener('change', () => {
   checkPassword();
 });
 
-// Stocker le token dans le localStorage
+/**
+ * Stocker le token dans le localStorage
+ */
 function setItem(key, value) {
   window.localStorage.setItem(key, value);
 }
 
-// Envoyer la requête POST vers le serveur
+/**
+ * Envoyer la requête POST vers le serveur
+ */
 async function postLogin() {
   const data = {
     email: inputEmail.value.trim(),
@@ -104,7 +118,9 @@ async function postLogin() {
   }
 }
 
-// Vérifier les champs et envoyer le formulaire
+/**
+ * Vérifier les champs et envoyer le formulaire
+ */
 function submitLogin() {
   const submitButton = document.getElementById('submit-button');
   submitButton.addEventListener('click', (event) => {

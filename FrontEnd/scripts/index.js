@@ -1,6 +1,11 @@
-/* RÉCUPÉRER LES PROJETS DEPUIS L'API ET LES STOCKER DANS UNE VARIABLE */
 let works = null;
+let categories = null;
 
+/**
+ * Récupère les projets depuis l'API et les stocke dans la variable works.
+ *
+ * @returns {Promise<void>}
+ */
 async function getWorks() {
   try {
     const response = await fetch('http://localhost:5678/api/works');
@@ -11,9 +16,11 @@ async function getWorks() {
   }
 }
 
-/* RÉCUPÉRER LES CATÉGORIES DEPUIS L'API ET LES STOCKER DANS UNE VARIABLE */
-let categories = null;
-
+/**
+ * Récupère les catégories depuis l'API et les stocke dans la variable categories.
+ *
+ * @returns {Promise<void>}
+ */
 async function getCategories() {
   try {
     const response = await fetch('http://localhost:5678/api/categories');
@@ -24,40 +31,48 @@ async function getCategories() {
   }
 }
 
-/* MAIN - AFFICHER LES PROJETS */
+/**
+ * Crée et affiche les projets dans la galerie.
+ *
+ * @param {Array} worksArray - Tableau d'objets représentant les projets, chaque objet doit contenir :
+ *   - imageUrl {string} : URL de l'image du projet
+ *   - title {string} : Titre du projet
+ */
 function createWorks(worksArray) {
+  const gallery = document.querySelector('.gallery');
+
   for (let i = 0; i < worksArray.length; i++) {
     const project = worksArray[i];
-    const gallery = document.querySelector('.gallery');
+
     const projectFigure = document.createElement('figure');
     const projectImg = document.createElement('img');
     projectImg.src = project.imageUrl;
     projectImg.alt = project.title;
-    const projectFigCaption = document.createElement('figcaption');
-    projectFigCaption.innerText = project.title;
-    projectFigure.appendChild(projectImg);
-    projectFigure.appendChild(projectFigCaption);
+
     gallery.appendChild(projectFigure);
   }
 }
 
-/* MAIN - CRÉER LES ONGLETS DE FILTRAGE PAR CATÉGORIES */
+/**
+ * Crée les onglets de filtrage par catégories.
+ */
 function createTabs() {
-  // Récupérer les catégories
-  const categoriesNames = works.map((work) => work.category.name);
-  const projectsCategories = new Set(categoriesNames);
-  // Créer le html
-  const categoriesTabsWrapper = document.querySelector('.tabs');
-  const categoriesTabs = document.createElement('ul');
-  categoriesTabsWrapper.appendChild(categoriesTabs);
-  // Créer le tab "Tous"
+  const categoriesNames = works.map((work) => work.category.name); // Récupérer les noms de catégories à partir des projets
+  const projectsCategories = new Set(categoriesNames); // Créer un ensemble unique de catégories
+
+  const categoriesTabsWrapper = document.querySelector('.tabs'); // Sélectionner le conteneur pour les onglets
+  const categoriesTabs = document.createElement('ul'); // Créer une liste pour les onglets
+  categoriesTabsWrapper.appendChild(categoriesTabs); // Ajouter la liste aux onglets
+
+  // Créer l'onglet "Tous"
   const categoriesTabAll = document.createElement('li');
   const categoriesTabAllLink = document.createElement('a');
   categoriesTabAllLink.innerText = 'Tous';
-  categoriesTabAllLink.classList.add('active');
+  categoriesTabAllLink.classList.add('active'); // Marquer l'onglet "Tous" comme actif par défaut
   categoriesTabAll.appendChild(categoriesTabAllLink);
   categoriesTabs.appendChild(categoriesTabAll);
-  // Ajouter les catégories aux tabs
+
+  // Ajouter les autres onglets de catégories
   projectsCategories.forEach((element) => {
     const categoriesTab = document.createElement('li');
     const categoriesTabLink = document.createElement('a');
@@ -67,19 +82,19 @@ function createTabs() {
   });
 }
 
-/* MAIN - FILTRER LES PROJETS PAR CATÉGORIE */
+/**
+ * Applique le filtrage des projets par catégorie en fonction de l'onglet cliqué.
+ */
 function filterWorks() {
-  // Récupérer la gallerie de projet
   const gallery = document.querySelector('.gallery');
-  // Récupérer les liens des tabs
   const tabs = document.querySelectorAll('.tabs ul li a');
-  // Filtrer la gallerie par catégorie
+
   tabs.forEach((tab) => {
     tab.addEventListener('click', (event) => {
-      // Supprimez la classe 'active' de tous les onglets
+      // Supprimer la classe 'active' de tous les onglets
       tabs.forEach((otherTab) => otherTab.classList.remove('active'));
 
-      // Ajoutez la classe 'active' à l'onglet cliqué
+      // Ajouter la classe 'active' à l'onglet cliqué
       event.target.classList.add('active');
 
       if (event.target.innerText === 'Tous') {
@@ -96,7 +111,9 @@ function filterWorks() {
   });
 }
 
-/* STATUT "CONNECTÉ" - Afficher la bannière de mode édition */
+/**
+ * Affiche la bannière de mode édition
+ */
 function createEditBanner() {
   const body = document.querySelector('body');
   const editBanner = document.createElement('div');
@@ -111,7 +128,9 @@ function createEditBanner() {
   body.style.marginTop = '97px';
 }
 
-/* STATUT "CONNECTÉ" - Afficher le bouton d'édition */
+/**
+ * Crée un bouton d'édition pour le portfolio et l'insère dans le DOM.
+ */
 function createEditButton() {
   const portfolio = document.getElementById('portfolio');
   const tabs = document.querySelector('.tabs');
@@ -131,7 +150,9 @@ function createEditButton() {
   headingWrapper.appendChild(editButton);
 }
 
-/* STATUT "CONNECTÉ" - Changer bouton login pour logout */
+/**
+ * Modifie le bouton de connexion en bouton de déconnexion et gère le processus de déconnexion.
+ */
 function changeLoginToLogout() {
   const loginLink = document.getElementById('login-link');
   loginLink.innerText = 'logout';
@@ -142,7 +163,9 @@ function changeLoginToLogout() {
   });
 }
 
-/* MODALES - VARIABLES */
+/**
+ * Variables des modales
+ */
 const modalFirst = document.getElementById('modal-1');
 const modalSecond = document.getElementById('modal-2');
 const closeButtons = document.querySelectorAll('.modal-button.close');
@@ -150,25 +173,37 @@ const modals = document.querySelectorAll('.modal');
 const addButton = document.getElementById('add-button');
 const previousButton = document.getElementById('previous-button');
 
-/* MODALES - AFFICHER LA PREMIÈRE MODALE */
+/**
+ * Affiche la première modale.
+ */
 function showModal() {
   modalFirst.style.display = 'flex';
 }
 
-/* MODALES - FERMER UNE MODALE */
+/**
+ * Ferme une modale spécifique.
+ * @param {HTMLElement} modalElement - L'élément HTML de la modale à fermer.
+ */
 function closeModal(modalElement) {
   const targetModal = modalElement;
   targetModal.style.display = 'none';
 }
 
-/* MODALES - DÉTECTER LES CLICS EN DEHORS DES MODALES */
+/**
+ * Détecte les clics en dehors des modales et les ferme si nécessaire.
+ * @param {Event} event - L'événement de clic.
+ * @param {HTMLElement} modal - L'élément HTML de la modale à vérifier.
+ */
 function outsideClick(event, modal) {
   if (!event.target.closest('.modal-content')) {
     closeModal(modal);
   }
 }
 
-/* MODALE 1 - SUPPRIMER UN PROJET */
+/**
+ * Supprime un projet.
+ * @param {number} projectId - L'ID du projet à supprimer.
+ */
 async function deleteWorks(projectId) {
   const apiUrl = `http://localhost:5678/api/works/${projectId}`;
   try {
@@ -191,7 +226,10 @@ async function deleteWorks(projectId) {
   }
 }
 
-/* MAIN + MODALE - METTRE À JOUR LE CONTENU */
+/**
+ * Met à jour le contenu du portfolio.
+ * @param {Array} worksArray - Un tableau d'objets représentant les œuvres de portfolio.
+ */
 async function updateContent(worksArray) {
   // Mettre à jour la gallerie du portfolio (.gallery)
   const gallery = document.querySelector('.gallery');
@@ -211,14 +249,20 @@ async function updateContent(worksArray) {
   createPreviews(worksArray);
 }
 
-/* METTRE A JOUR LE CONTENU APRÈS SUPPRESSION D'UN PROJET */
+/**
+ * Met à jour le contenu après la suppression d'un projet.
+ *
+ * @param {string} projectId - L'ID du projet à supprimer.
+ */
 async function handleDelete(projectId) {
   await deleteWorks(projectId);
   await getWorks();
   updateContent(works);
 }
 
-/* MODALE 1 - AFFICHER LES PRÉVISUALISATIONS DES PROJETS */
+/**
+ * Crée les prévisualisations des projets dans la modale.
+ */
 function createPreviews() {
   const modalGallery = document.querySelector('.modal-gallery');
   works.forEach((project) => {
@@ -247,7 +291,9 @@ function createPreviews() {
   });
 }
 
-/* MODALE 2 - AJOUTER LES CATÉGORIES DES PROJETS AU SELECT */
+/**
+ * Remplit le select avec les catégories des projets.
+ */
 function fillCategoriesSelect() {
   const categoriesSelect = document.getElementById('category');
   categories.forEach((categorie) => {
@@ -258,7 +304,12 @@ function fillCategoriesSelect() {
   });
 }
 
-/* MODALE 2 - ACTIVER LE BOUTON SUBMIT */
+/**
+ * Active le bouton submit si les erreurs sont vides et le titre n'est pas affiché.
+ *
+ * @param {Element} fileError - L'élément d'erreur du fichier.
+ * @param {Element} titleError - L'élément d'erreur du titre.
+ */
 function enableSubmit(fileError, titleError) {
   const inputSubmitWork = document.getElementById('input-submit-work');
   if (fileError.innerText === '' && titleError.style.display === 'none') {
@@ -268,7 +319,9 @@ function enableSubmit(fileError, titleError) {
   }
 }
 
-/* MODALE 2 - VÉRIFIER L'IMAGE ET AFFICHER LA PRÉVISUALISATION */
+/**
+ * Vérifie l'image uploadée affiche la prévisualisation et une erreur si nécessaire.
+ */
 function checkFile() {
   const fileInput = document.getElementById('image');
   fileInput.addEventListener('change', (event) => {
@@ -283,11 +336,11 @@ function checkFile() {
       return;
     }
 
-    // Vérifier si la taille de l'image est inférieure a 4Mo
+    // Vérifier si la taille de l'image est inférieure à 4Mo
     const maxSizeMB = 4;
     const maxSizeMO = maxSizeMB * 1024 * 1024;
     if (file.size > maxSizeMO) {
-      fileError.innerText = 'Veuillez importer une image inférieure a 4Mo';
+      fileError.innerText = 'Veuillez importer une image inférieure à 4Mo';
       fileError.style.display = 'block';
       return;
     }
@@ -308,7 +361,9 @@ function checkFile() {
   });
 }
 
-/* MODALE 2 - VÉRIFIER LE TITRE */
+/**
+ * Vérifie le titre et affiche une erreur si nécessaire.
+ */
 function checkTitle() {
   const inputTitle = document.getElementById('title');
   const titleError = document.getElementById('title-error');
@@ -324,7 +379,9 @@ function checkTitle() {
   });
 }
 
-/* MODALES - AJOUTER LES INTÉRACTIONS */
+/**
+ * Ajoute les interactions aux modales.
+ */
 function addModalInteractions() {
   // Afficher la première modale au clic sur le bouton "modifier"
   document.querySelector('#edit-button').addEventListener('click', showModal);
@@ -359,7 +416,9 @@ function addModalInteractions() {
   fillCategoriesSelect();
 }
 
-/* MODALE 2 - AJOUTER UN PROJET */
+/**
+ * Ajoute un projet en envoiant les données du formulaire à l'API.
+ */
 async function addWork() {
   const form = document.getElementById('add-work-form');
   form.addEventListener('submit', async (event) => {
@@ -406,7 +465,9 @@ async function addWork() {
   });
 }
 
-/* STATUT "CONNECTÉ" - AFFICHER LES ÉLÉMENTS ET INTERACTIONS */
+/**
+ * Affiche les éléments et les interactions lorsque l'utilisateur est connecté.
+ */
 async function displayLogged() {
   const token = window.localStorage.getItem('token');
   if (token !== null) {
@@ -418,7 +479,9 @@ async function displayLogged() {
   }
 }
 
-/* ATTENDRE LE CHARGEMENT COMPLET DU DOM ET EXECUTER LES FONCTIONS */
+/**
+ * Attends le chargement complet du DOM et exécute les fonctions.
+ */
 document.addEventListener('DOMContentLoaded', async () => {
   // Attendre la récupération des projets et des catégories
   await getWorks();
