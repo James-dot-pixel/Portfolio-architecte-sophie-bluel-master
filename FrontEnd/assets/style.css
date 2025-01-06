@@ -279,7 +279,7 @@ li a:hover {
 	align-items: center;
 	height: 37px;
 	padding: 0 20px 0 20px;
-	border: 1px solid #1D6154;
+	box-shadow: inset 0px 0px 0px 1px #1D6154;
 	border-radius: 60px;
 	font-family: 'Syne';
 	font-weight: 700;
@@ -287,9 +287,16 @@ li a:hover {
 	line-height: 19px;
 	text-align: center;
 	color: #1D6154;
+	box-sizing: border-box;
 }
 
 .tabs a:hover {
+	box-shadow: inset 0px 0px 0px 2px #1D6154;
+	color: #1D6154;
+	cursor: pointer;
+}
+
+.tabs a.active {
 	background-color: #1D6154;
 	color: #FFFEF8;
 	cursor: pointer;

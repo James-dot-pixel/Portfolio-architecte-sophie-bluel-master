@@ -54,6 +54,7 @@ function createTabs() {
   const categoriesTabAll = document.createElement('li');
   const categoriesTabAllLink = document.createElement('a');
   categoriesTabAllLink.innerText = 'Tous';
+  categoriesTabAllLink.classList.add('active');
   categoriesTabAll.appendChild(categoriesTabAllLink);
   categoriesTabs.appendChild(categoriesTabAll);
   // Ajouter les catégories aux tabs
@@ -71,10 +72,16 @@ function filterWorks() {
   // Récupérer la gallerie de projet
   const gallery = document.querySelector('.gallery');
   // Récupérer les liens des tabs
-  const tabs = document.querySelectorAll('.tabs ul li');
+  const tabs = document.querySelectorAll('.tabs ul li a');
   // Filtrer la gallerie par catégorie
   tabs.forEach((tab) => {
     tab.addEventListener('click', (event) => {
+      // Supprimez la classe 'active' de tous les onglets
+      tabs.forEach((otherTab) => otherTab.classList.remove('active'));
+
+      // Ajoutez la classe 'active' à l'onglet cliqué
+      event.target.classList.add('active');
+
       if (event.target.innerText === 'Tous') {
         gallery.innerHTML = '';
         createWorks(works);
