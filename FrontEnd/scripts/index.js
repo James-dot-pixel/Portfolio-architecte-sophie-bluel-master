@@ -48,7 +48,9 @@ function createWorks(worksArray) {
     const projectImg = document.createElement('img');
     projectImg.src = project.imageUrl;
     projectImg.alt = project.title;
+    console.log(projectFigure);
 
+    projectFigure.appendChild(projectImg);
     gallery.appendChild(projectFigure);
   }
 }
