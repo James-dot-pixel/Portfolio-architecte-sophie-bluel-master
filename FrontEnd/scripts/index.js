@@ -38,7 +38,7 @@ async function getCategories() {
  *   - imageUrl {string} : URL de l'image du projet
  *   - title {string} : Titre du projet
  */
-function createWorks(worksArray) {
+function displayWorks(worksArray) {
   const gallery = document.querySelector('.gallery');
 
   for (let i = 0; i < worksArray.length; i++) {
@@ -101,13 +101,13 @@ function filterWorks() {
 
       if (event.target.innerText === 'Tous') {
         gallery.innerHTML = '';
-        createWorks(works);
+        displayWorks(works);
       } else {
         const worksFiltered = works.filter(
           (work) => work.category.name === event.target.innerText,
         );
         gallery.innerHTML = '';
-        createWorks(worksFiltered);
+        displayWorks(worksFiltered);
       }
     });
   });
@@ -236,7 +236,7 @@ async function updateContent(worksArray) {
   // Mettre à jour la gallerie du portfolio (.gallery)
   const gallery = document.querySelector('.gallery');
   gallery.innerHTML = '';
-  createWorks(worksArray);
+  displayWorks(worksArray);
 
   // Mettre à jour les onglets de filtres (.tabs)
   const categoriesTabsWrapper = document.querySelector('.tabs');
@@ -489,7 +489,7 @@ document.addEventListener('DOMContentLoaded', async () => {
   await getWorks();
   await getCategories();
   createTabs();
-  createWorks(works);
+  displayWorks(works);
   filterWorks();
   displayLogged();
 });
