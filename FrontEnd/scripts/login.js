@@ -109,7 +109,7 @@ async function postLogin() {
     const responseData = await response.json();
     const userToken = responseData.token;
     setItem('token', userToken);
-    window.location.href = '../FrontEnd/index.html';
+    window.location.href = '/index.html';
   } catch (error) {
     alertInfo.innerText = error.message;
     alertInfo.style.color = 'red';

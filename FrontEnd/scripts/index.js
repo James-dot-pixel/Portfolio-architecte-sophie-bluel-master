@@ -48,9 +48,10 @@ function displayWorks(worksArray) {
     const projectImg = document.createElement('img');
     projectImg.src = project.imageUrl;
     projectImg.alt = project.title;
-    console.log(projectFigure);
-
+    const projectFigCaption = document.createElement('figcaption');
+    projectFigCaption.innerText = project.title;
     projectFigure.appendChild(projectImg);
+    projectFigure.appendChild(projectFigCaption);
     gallery.appendChild(projectFigure);
   }
 }
